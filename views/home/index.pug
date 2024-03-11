@@ -3,21 +3,27 @@ body
     .container.mt-5
       .row.d-flex.align-items-center
         .col-md-6
-          h1 List
+          h1= t('home.index.list')
         .col-md-6.text-end
-          a.btn.btn-success(href='/add', role='button') Add      
+          a.btn.btn-success(href='/add', role='button')= t('home.index.add')
       table.table.table-responsive.table-hover.table-striped.table-dark
         thead
           tr
-            th(scope="col") ID
-            th(scope="col") Event Name
-            th(scope="col") Event DateTime
-            th(scope="col") Venue
-            th(scope="col") Contact Phone
-            th(scope="col") Seat
-            th(scope="col") Actions
+            th(scope="col")= t('event.id')
+            th(scope="col")= t('event.name')
+            th(scope="col")= t('event.datetime')
+            th(scope="col")= t('event.venue')
+            th(scope="col")= t('event.contact_phone')
+            th(scope="col")= t('event.seat')
+            th(scope="col")= t('home.index.actions')
         tbody
+    include ../language-select.pug
 script.
+  var updateText = "#{t('home.index.update')}";
+  var deleteText = "#{t('home.index.delete')}";
+  var deletionSuccessfulText = "#{t('home.index.deletion_successful')}";
+  var deletionUnsuccessfulText = "#{t('home.index.deletion_unsuccessful')}";
+
   document.addEventListener('DOMContentLoaded', function() {
     axios.get('/api/ticket').then(function(response) {
       const tickets = response.data;
@@ -33,8 +39,8 @@ script.
           <td>${ticket.contactPhone}</td>
           <td>${ticket.seat}</td>
           <td>
-            <button class="btn btn-primary btn-sm" data-id="${t.id}" onclick="window.location.href='/update/${t.id}'">Update</button>
-            <button class="btn btn-danger btn-sm" data-id="${t.id}">Delete</button>
+            <button class="btn btn-primary btn-sm" data-id="${t.id}" onclick="window.location.href='/update/${t.id}'">${updateText}</button>
+            <button class="btn btn-danger btn-sm" data-id="${t.id}">${deleteText}</button>
           </td>
         `;
         tableBody.appendChild(row);
@@ -49,11 +55,11 @@ script.
       if (event.target && event.target.classList.contains('btn-danger')) {
         const ticketId = event.target.getAttribute('data-id');
         axios.delete(`/api/ticket/${ticketId}`).then(function(response) {
-          alert('Deleted successfully', response);
+          alert(`${deletionSuccessfulText}`, response);
           location.href = '/'
         })
         .catch(function(error) {
-          alert('Error deleting ticket: ' + error);
+          alert(`${deletionUnsuccessfulText}` + error);
         });
       }
     });

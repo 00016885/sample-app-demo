@@ -17,17 +17,17 @@ const ticket_controller = {
         if (ticket) {
             res.json(ticket)
         } else {
-            res.status(404).send('Ticket not found')
+            res.status(404).send(req.t('controller.api.ticket.ticket.not_empty'))
         }
     },
     delete(req, res) {
-		const ticket = ticket_service.getById(req.params.id)
-		
+        const ticket = ticket_service.getById(req.params.id)
+        
         if (ticket) {
             ticket_service.delete(req.params.id)
-			res.status(204).send('Ticket deleted successfully')
+            res.status(204).send(req.t('controller.api.ticket.deletion_successful'))
         } else {
-            res.status(404).send('Ticket not found')
+            res.status(404).send(req.t('controller.api.ticket.ticket.not_empty'))
         }
     }
 }

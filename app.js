@@ -28,7 +28,7 @@ i18n
   .use(Backend)
   .use(middleware.LanguageDetector)
   .init({
-    fallbackLng: 'en',
+    fallbackLng: 'fr',
     backend: {
       loadPath: './locales/{{lng}}/translation.json',
     },

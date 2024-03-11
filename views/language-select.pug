@@ -1,0 +1,37 @@
+select#languageDropdown
+  option(value="en") English
+  option(value="fr") Français
+  option(value="es") Español
+
+script.
+
+  function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+      const cookies = document.cookie.split(';');
+      for (let i = 0; i < cookies.length; i++) {
+        let cookie = cookies[i].trim();
+        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Set the dropdown's value based on the preferredLanguage cookie
+    var preferredLanguage = getCookie('preferredLanguage');
+    var languageDropdown = document.getElementById('languageDropdown');
+    if (preferredLanguage && languageDropdown) {
+      languageDropdown.value = preferredLanguage;
+    }
+
+    // Language selection handler
+    languageDropdown.addEventListener('change', function() {
+      var selectedLanguage = this.value;
+      document.cookie = "preferredLanguage=" + selectedLanguage + ";path=/";
+      window.location.reload(); // Reload the page to apply the language change
+    });
+  });

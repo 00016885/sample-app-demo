@@ -1,58 +1,62 @@
-const { body, param } = require('express-validator');
+const expressValidator = require('express-validator');
+
+const body = expressValidator.body;
+const param = expressValidator.param;
+
 const ticket_service = require('../../services/ticket')
 
-const addTicketValidation = () => {
+const addTicketValidation = (req) => {
   return [
     body('eventName')
-      .notEmpty().withMessage('Event name must not be empty')
-      .isLength({ min: 8, max: 255 }).withMessage('Event name must be between 8 and 255 characters long'),
+      .notEmpty().withMessage((value, { req }) => req.t('middleware.validator.event_name.not_empty'))
+      .isLength({ min: 8, max: 255 }).withMessage((value, { req }) => req.t('middleware.validator.event_name.length')),
     body('eventDateTime')
-      .notEmpty().withMessage('Event date time must not be empty')
+      .notEmpty().withMessage((value, { req }) => req.t('middleware.validator.event_datetime.not_empty'))
       .matches(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/(19|20)\d\d\s([01][0-9]|2[0-3]):([0-5][0-9])$/, 'g')
-        .withMessage('Invalid date and time format. Please use "DD/MM/YYYY HH:mm" format.'),
+        .withMessage((value, { req }) => req.t('middleware.validator.event_datetime.format')),
     body('venue')
-      .notEmpty().withMessage('Event venue must not be empty'),
+      .notEmpty().withMessage((value, { req }) => req.t('middleware.validator.venue.not_empty')),
     body('contactPhone')
-      .notEmpty().withMessage('Contact phone must not be empty')
-      .matches(/^\+998\d{9}$/).withMessage('Invalid phone number format, it must be +998xxxxxxxxx'),
+      .notEmpty().withMessage((value, { req }) => req.t('middleware.validator.contact_phone.not_empty'))
+      .matches(/^\+998\d{9}$/).withMessage((value, { req }) => req.t('middleware.validator.contact_phone.format')),
     body('seat')
-      .notEmpty().withMessage('Seat must not be empty'),      
+      .notEmpty().withMessage((value, { req }) => req.t('middleware.validator.seat.not_empty')),      
   ];
 };
 
-const deleteTicketValidation = () => {
+const deleteTicketValidation = (req) => {
   return [
     param('id').custom(async (id) => {
       const exists = await ticket_service.getById(id);
       if (!exists) {
-        throw new Error('Ticket not found');
+        throw new Error((value, { req }) => req.t('middleware.validator.ticket.not_empty'));
       }
     })
   ];
 };
 
-const updateTicketValidation = () => {
+const updateTicketValidation = (req) => {
   return [
     param('id').custom(async (id) => {
       const exists = await ticket_service.getById(id);
       if (!exists) {
-        throw new Error('Ticket not found');
+        throw new Error((value, { req }) => req.t('middleware.validator.ticket.not_empty'));
       }
     }),
     body('eventName')
-      .notEmpty().withMessage('Event name must not be empty')
-      .isLength({ min: 8, max: 255 }).withMessage('Event name must be between 8 and 255 characters long'),
+      .notEmpty().withMessage((value, { req }) => req.t('middleware.validator.event_name.not_empty'))
+      .isLength({ min: 8, max: 255 }).withMessage((value, { req }) => req.t('middleware.validator.event_name.length')),
     body('eventDateTime')
-      .notEmpty().withMessage('Event date time must not be empty')
+      .notEmpty().withMessage((value, { req }) => req.t('middleware.validator.event_datetime.not_empty'))
       .matches(/^(0[1-9]|[12][0-9]|3[01])\/(0[1-9]|1[012])\/(19|20)\d\d\s([01][0-9]|2[0-3]):([0-5][0-9])$/, 'g')
-        .withMessage('Invalid date and time format. Please use "DD/MM/YYYY HH:mm" format.'),
+        .withMessage((value, { req }) => req.t('middleware.validator.event_datetime.format')),
     body('venue')
-      .notEmpty().withMessage('Event venue must not be empty'),
+      .notEmpty().withMessage((value, { req }) => req.t('middleware.validator.venue.not_empty')),
     body('contactPhone')
-      .notEmpty().withMessage('Contact phone must not be empty')
-      .matches(/^\+998\d{9}$/).withMessage('Invalid phone number format, it must be +998xxxxxxxxx'),
+      .notEmpty().withMessage((value, { req }) => req.t('middleware.validator.contact_phone.not_empty'))
+      .matches(/^\+998\d{9}$/).withMessage((value, { req }) => req.t('middleware.validator.contact_phone.format')),
     body('seat')
-      .notEmpty().withMessage('Seat must not be empty'),      
+      .notEmpty().withMessage((value, { req }) => req.t('middleware.validator.seat.not_empty')),      
   ];
 };
 
